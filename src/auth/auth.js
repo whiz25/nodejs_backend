@@ -5,9 +5,9 @@ require("dotenv").config();
 const accessTokenSecret = process.env.ACCESSTOKENSECRET;
 
 const verifyJWT = (req, res, next) => {
-  if (req.headers["authorization"]) {
+  if (req.headers.authorization) {
     try {
-      const authorization = req.headers["authorization"].split(" ");
+      const authorization = req.headers.authorization.split(" ");
       if (authorization[0] !== "Bearer") {
         return res.sendStatus(401);
       }

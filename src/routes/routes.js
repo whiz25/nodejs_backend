@@ -11,15 +11,14 @@ const accessTokenSecret = process.env.ACCESSTOKENSECRET;
 const login = (req, res) => {
   const { username, password } = req.body;
 
-  const validUser =
-    validateUsername(username) &&
-    validatePassword(password) &&
-    username &&
-    password;
+  const validUser = validateUsername(username)
+  && validatePassword(password)
+  && username
+  && password;
 
   if (validUser) {
-    const accessToken = jwt.sign({ username: username }, accessTokenSecret);
-    res.json({ accessToken });
+    const accessToken = jwt.sign(username, accessTokenSecret);
+    res.json(accessToken);
   }
   res.sendStatus(400);
 };
@@ -28,7 +27,7 @@ const patchJson = (req, res) => {
   const requestBody = req.body;
   const jsonPatch = requestBody.patch;
 
-  const doc = requestBody.doc;
+  const { doc } = requestBody.doc;
 
   let path;
   let patchPath;
