@@ -4,21 +4,20 @@ require("dotenv").config();
 
 const accessTokenSecret = process.env.ACCESSTOKENSECRET;
 
-const verifyJWT = (req, res) => {
-  const authHeader = req.headers.authorization;
-
-  if (authHeader) {
-    const token = authHeader.split(" ")[1];
+const verifyJWT = (req, res, next) => {
+  if (req.headers["authorization"]) {
     try {
-      jwt.verify(token, accessTokenSecret, (err, user) => {
-        req.user = user;
-        next();
-      });
+      const authorization = req.headers["authorization"].split(" ");
+      if (authorization[0] !== "Bearer") {
+        return res.sendStatus(401);
+      }
+      req.jwt = jwt.verify(authorization[1], accessTokenSecret);
+      return next();
     } catch (err) {
-      res.send(err);
+      return res.sendStatus(403);
     }
   }
-  res.sendStatus(401);
+  return res.sendStatus(401);
 };
 
 module.exports = verifyJWT;
