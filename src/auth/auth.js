@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 
+require("dotenv").config();
+
 const accessTokenSecret = process.env.ACCESSTOKENSECRET;
 
 const verifyJWT = (req, res) => {
@@ -18,3 +20,5 @@ const verifyJWT = (req, res) => {
   }
   res.sendStatus(401);
 };
+
+module.exports = verifyJWT;
