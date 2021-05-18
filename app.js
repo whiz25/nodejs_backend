@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const verifyJWT = require("./src/auth/auth");
+
 const {
   login,
   patchJson,
@@ -11,8 +12,6 @@ const {
 const app = express();
 app.use(bodyParser.json());
 app.use(morgan("combined"));
-
-require("dotenv").config();
 
 app.post("/login", login);
 app.post("/patch", [verifyJWT, patchJson]);

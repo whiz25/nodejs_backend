@@ -2,24 +2,32 @@ const jwt = require("jsonwebtoken");
 const patch = require("jsonpatch");
 const sharp = require("sharp");
 
+const validateUsername = require("../validators/username");
+const validatePassword = require("../validators/password");
+const validateUrl = require("../validators/url");
+
 const accessTokenSecret = process.env.ACCESSTOKENSECRET;
 
 const login = (req, res) => {
   const { username, password } = req.body;
 
-  const validUser = username && password;
+  const validUser =
+    validateUsername(username) &&
+    validatePassword(password) &&
+    username &&
+    password;
 
   if (validUser) {
     const accessToken = jwt.sign({ username: username }, accessTokenSecret);
     res.json({ accessToken });
   }
-  res.sendStatus(403);
+  res.sendStatus(400);
 };
 
 const patchJson = (req, res) => {
   const requestBody = req.body;
   const jsonPatch = requestBody.patch;
-  // eslint-disable-next-line
+
   const doc = requestBody.doc;
 
   let path;
@@ -45,10 +53,12 @@ const patchJson = (req, res) => {
 const generateImageThumbnail = (req, res) => {
   const requestBody = req.body;
 
-  if (requestBody.imageUrl) {
+  const validUrl = validateUrl(requestBody.imageUrl);
+
+  if (validUrl) {
     const generatedImageThumbnail = sharp(requestBody.imageUrl).resize(50, 50);
 
-    res.json(generatedImageThumbnail.options);
+    res.json(generatedImageThumbnail);
   }
 
   res.sendStatus(400);
